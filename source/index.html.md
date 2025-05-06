@@ -23,7 +23,7 @@ meta:
 
 # Introduction
 
-Welcome to the Sandcastle API! This API enables programmatic access to core features of the Sandcastle system including invoking agents, configuring environments, and uploading build targets.
+Welcome to the Sandcastle API! This API enables programmatic access to core features of the Sandcastle platform including invoking agents, configuring environments, and uploading build targets.
 
 All requests must be authenticated with an API key using the `x-api-key` header.
 

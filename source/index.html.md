@@ -164,18 +164,18 @@ The number of minutes remaining in the current billing cycle.<br><br>
 curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env" \
   -H "x-api-key: your_api_key" \
   -H "Content-Type: application/json" \
-  -d '{"repository_name": "sandcastle-test-repository", "vars": [{"name": "KEY", "value": "VALUE"}]}'
+  -d '{"repository_name": "odrori1997/sandcastle-test-repository", "vars": [{"name": "KEY", "value": "VALUE"}]}'
 ```
 
 ```python
-data = {"repository_name": "sandcastle-test-repository", "vars": [{"name": "KEY", "value": "VALUE"}]}
+data = {"repository_name": "odrori1997/sandcastle-test-repository", "vars": [{"name": "KEY", "value": "VALUE"}]}
 res = requests.post("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env", headers=headers, json=data)
 print(res.json())
 ```
 
 ```typescript
 const payload = {
-  repository_name: "sandcastle-test-repository",
+  repository_name: "odrori1997/sandcastle-test-repository",
   vars: [{ name: "KEY", value: "VALUE" }]
 };
 const res = await fetch("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env", {
@@ -190,7 +190,7 @@ console.log(data);
 ```json
 {
   "message": "Environment variables set successfully",
-  "repository_name": "sandcastle-test-repository",
+  "repository_name": "odrori1997/sandcastle-test-repository",
   "vars_count": 4
 }
 ```
@@ -202,7 +202,8 @@ console.log(data);
 ### Parameters
 
 `repository_name` *string*<br>
-The name of the repository for which you set the environment variables.<br><br>
+The name of the repository for which you set the environment variables. Takes the form of <github_id>/<repository>.
+Example: `yoheinakajima/babyagi`<br><br>
 
 `vars` *array of objects*<br>
 An array of `{ name, value }` pairs that represent the name and value for the environment variables.<br><br>
@@ -226,13 +227,13 @@ Number of environment variables that were successfully set.<br><br>
 curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent" \
   -H "x-api-key: your_api_key" \
   -H "Content-Type: application/json" \
-  -d '{"query": "What\'s the weather?", "build_repository": {"repository_name": "weather-agent"}, "script_path": "agents/weather.py"}'
+  -d '{"query": "What\'s the weather?", "build_repository": {"repository_name": "SavDont/weather-agent"}, "script_path": "agents/weather.py"}'
 ```
 
 ```python
 data = {
   "query": "What's the weather?",
-  "build_repository": { "repository_name": "weather-agent" },
+  "build_repository": { "repository_name": "SavDont/weather-agent" },
   "script_path": "agents/weather.py"
 }
 res = requests.post("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent", headers=headers, json=data)
@@ -272,7 +273,9 @@ console.log(data);
 Accessible via the `QUERY` environment variable within your agent code.<br><br>
 
 `build_repository` *object*<br>
-Contains `repository_name`, which is the name of your build target that contains your agent code.<br><br>
+Contains `repository_name`, which is the name of your build target that contains your agent code.
+`respository_name` takes the form of <github_id>/<repository>.
+Example: `yoheinakajima/babyagi`<br><br>
 
 `script_path` *string*<br>
 File path within your repository to your agent code.<br><br>

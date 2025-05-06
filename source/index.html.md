@@ -1,11 +1,10 @@
 ---
 title: API Reference
 
-language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
+language_tabs:
   - shell
-  - ruby
   - python
-  - javascript
+  - typescript
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -20,85 +19,51 @@ code_clipboard: true
 
 meta:
   - name: description
-    content: Documentation for the Kittn API
+    content: Documentation for the Sandcastle API
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the Sandcastle API! This API enables programmatic access to core features of the Sandcastle system including invoking agents, configuring environments, and uploading build targets.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+All requests must be authenticated with an API key using the `x-api-key` header.
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Base URL:  
+`https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod`
+
+---
 
 # Authentication
 
-> To authorize, use this code:
+> Example API Key usage:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+```shell
+curl "https://..." -H "x-api-key: your_api_key"
 ```
 
 ```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
+import requests
+headers = {'x-api-key': 'your_api_key'}
+requests.get("https://...", headers=headers)
 ```
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
+```typescript
+fetch("https://...", { headers: { "x-api-key": "your_api_key" } })
 ```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+Replace <code>your_api_key</code> with your actual API key.
 </aside>
 
-# Kittens
+---
 
-## Get All Kittens
+# Endpoints
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+## Get User Images
 
 ```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+curl "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/user-images" \
+  -H "x-api-key: your_api_key"
 ```
 
 > The above command returns JSON structured like this:
@@ -106,140 +71,126 @@ let kittens = api.kittens.get();
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "repo_name": "sandcastle-test-repository-1",
+    "branch_name": "main",
+    "commit_hash": "abc123",
+    "create_time": 1746561268,
+    "status": "SUCCEEDED",
   },
   {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
+    "repo_name": "sandcastle-test-repository-2",
+    "branch_name": "main",
+    "commit_hash": "abc123",
+    "create_time": 1746561270,
+    "status": "IN PROGRESS",
+  },
 ]
 ```
 
-This endpoint retrieves all kittens.
+Retrieves uploaded user images.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET /user-images`
+
+---
+
+## Get Usage Statistics
+
+```shell
+curl "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/usage-statistics" \
+  -H "x-api-key: your_api_key"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "plan_id": "Starter",
+  "minutes_used": 60,
+  "remaining_minutes": 1380,
+}
+```
+
+Retrieves the current API usage statistics for the authenticated user.
+
+### HTTP Request
+
+`GET /usage-statistics`
+
+---
+
+## Set Environment
+
+```shell
+curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env" \
+  -H "x-api-key: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "message": "Environment variables set successfully",
+  "repository_name": "sandcastle-test-repository",
+  "vars_count": 4,
+}
+```
+
+Sets the environment configuration for the user.
+
+### HTTP Request
+
+`POST /set-env`
 
 ### Query Parameters
 
-Parameter | Default | Description
+Parameter | Type | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+repository_name | string | The name of the repository for which you set the environment variables. 
+vars | [ { name, value } ] | An array of name, value pairs that represent the name and value for the environment variables. 
 
 <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+Remember to include your API key in the header!
 </aside>
 
-## Get a Specific Kitten
+---
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+## Call Agent
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent" \
+  -H "x-api-key: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "message": "Fargate task started",
+  "logs_output": "https://sandcastle.s3.amazonaws.com/example-object.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20250506%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250506T150000Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=abcd1234ef567890abcd1234ef567890abcd1234ef567890abcd1234ef567890",  // s3 presigned url, a text file containing the logs output of your agent run
+  "job_id": 4,
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+Calls an AI agent with a provided input payload.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`POST /call-agent`
 
-### URL Parameters
+### Query Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+Parameter | Type | Description
+--------- | ------- | -----------
+query | string | Accessible via QUERY environment variable within your agent code. 
+build_repository | { repository_name } | The name of your build target that contains your agent code. 
+script_path | string | File path within your repository to your agent code. 
 
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+<aside class="success">
+Remember to include your API key in the header!
+</aside>

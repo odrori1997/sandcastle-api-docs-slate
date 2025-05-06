@@ -8,7 +8,6 @@ language_tabs:
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -66,13 +65,37 @@ curl "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/user-images" \
   -H "x-api-key: your_api_key"
 ```
 
-Retrieves uploaded builds of your agent code.
+```python
+import requests
+headers = {'x-api-key': 'your_api_key'}
+res = requests.get("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/user-images", headers=headers)
+print(res.json())
+```
+
+```typescript
+const res = await fetch("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/user-images", {
+  headers: { "x-api-key": "your_api_key" }
+});
+const data = await res.json();
+console.log(data);
+```
+
+```json
+{
+  "repo_name": "sandcastle-test-repository",
+  "branch_name": "main",
+  "commit_hash": "abc123def456",
+  "create_time": 1715012345,
+  "status": "SUCCEEDED"
+}
+```
 
 ### HTTP Request
 
 `GET /user-images`
 
 ### Response
+
 `repo_name` *string*<br>
 Name of the repository that contains your agent code.<br><br>
 
@@ -95,9 +118,21 @@ Status of the build.<br><br>
 ```shell
 curl "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/usage-statistics" \
   -H "x-api-key: your_api_key"
-
-# The above command returns JSON structured like this:
 ```
+
+```python
+res = requests.get("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/usage-statistics", headers=headers)
+print(res.json())
+```
+
+```typescript
+const res = await fetch("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/usage-statistics", {
+  headers: { "x-api-key": "your_api_key" }
+});
+const data = await res.json();
+console.log(data);
+```
+
 ```json
 {
   "plan_id": "Starter",
@@ -105,8 +140,6 @@ curl "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/usage-statisti
   "remaining_minutes": 1380
 }
 ```
-
-Retrieves the current API usage statistics for the authenticated user.
 
 ### HTTP Request
 
@@ -116,16 +149,12 @@ Retrieves the current API usage statistics for the authenticated user.
 
 `plan_id` *string*<br>
 The name of the user’s current subscription plan.<br><br>
-Example: `"Starter"`<br><br>
 
 `minutes_used` *int*<br>
 The number of minutes used during the current billing cycle.<br><br>
-Example: `60`<br><br>
 
 `remaining_minutes` *int*<br>
 The number of minutes remaining in the current billing cycle.<br><br>
-Example: `1380`<br><br>
-
 
 ---
 
@@ -135,23 +164,48 @@ Example: `1380`<br><br>
 curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env" \
   -H "x-api-key: your_api_key" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{"repository_name": "sandcastle-test-repository", "vars": [{"name": "KEY", "value": "VALUE"}]}'
 ```
 
-Sets the environment configuration for the user.
+```python
+data = {"repository_name": "sandcastle-test-repository", "vars": [{"name": "KEY", "value": "VALUE"}]}
+res = requests.post("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env", headers=headers, json=data)
+print(res.json())
+```
+
+```typescript
+const payload = {
+  repository_name: "sandcastle-test-repository",
+  vars: [{ name: "KEY", value: "VALUE" }]
+};
+const res = await fetch("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/set-env", {
+  method: "POST",
+  headers: { "x-api-key": "your_api_key", "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+const data = await res.json();
+console.log(data);
+```
+
+```json
+{
+  "message": "Environment variables set successfully",
+  "repository_name": "sandcastle-test-repository",
+  "vars_count": 4
+}
+```
 
 ### HTTP Request
 
 `POST /set-env`
 
-### Query Parameters
+### Parameters
 
 `repository_name` *string*<br>
 The name of the repository for which you set the environment variables.<br><br>
 
 `vars` *array of objects*<br>
 An array of `{ name, value }` pairs that represent the name and value for the environment variables.<br><br>
-
 
 ### Response
 
@@ -172,16 +226,47 @@ Number of environment variables that were successfully set.<br><br>
 curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent" \
   -H "x-api-key: your_api_key" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{"query": "What\'s the weather?", "build_repository": {"repository_name": "weather-agent"}, "script_path": "agents/weather.py"}'
 ```
 
-Calls an AI agent with a provided input payload.
+```python
+data = {
+  "query": "What's the weather?",
+  "build_repository": { "repository_name": "weather-agent" },
+  "script_path": "agents/weather.py"
+}
+res = requests.post("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent", headers=headers, json=data)
+print(res.json())
+```
+
+```typescript
+const payload = {
+  query: "What's the weather?",
+  build_repository: { repository_name: "weather-agent" },
+  script_path: "agents/weather.py"
+};
+const res = await fetch("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent", {
+  method: "POST",
+  headers: { "x-api-key": "your_api_key", "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+const data = await res.json();
+console.log(data);
+```
+
+```json
+{
+  "message": "Agent run started",
+  "logs_output": "https://sandcastle.s3.amazonaws.com/example-object.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20250506%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250506T150000Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=abcd1234ef567890abcd1234ef567890abcd1234ef567890abcd1234ef567890",
+  "job_id": 4
+}
+```
 
 ### HTTP Request
 
 `POST /call-agent`
 
-### Query Parameters
+### Parameters
 
 `query` *string*<br>
 Accessible via the `QUERY` environment variable within your agent code.<br><br>
@@ -192,11 +277,6 @@ Contains `repository_name`, which is the name of your build target that contains
 `script_path` *string*<br>
 File path within your repository to your agent code.<br><br>
 
-
-<aside class="success">
-Remember to include your API key in the header!
-</aside>
-
 ### Response
 
 `message` *string*<br>
@@ -204,8 +284,6 @@ Human-readable message confirming the agent run has started.<br><br>
 
 `logs_output` *string*<br>
 An S3 pre-signed URL pointing to a text file containing the logs output of your agent run.<br><br>
-Example:  
-`https://sandcastle.s3.amazonaws.com/example-object.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20250506%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250506T150000Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=abcd1234ef567890abcd1234ef567890abcd1234ef567890abcd1234ef567890`<br><br>
 
 `job_id` *int*<br>
 Unique identifier for the agent run.<br><br>

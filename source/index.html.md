@@ -227,13 +227,13 @@ Number of environment variables that were successfully set.<br><br>
 curl -X POST "https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent" \
   -H "x-api-key: your_api_key" \
   -H "Content-Type: application/json" \
-  -d '{"query": "What\'s the weather?", "build_repository": {"repository_name": "SavDont/weather-agent"}, "script_path": "agents/weather.py"}'
+  -d '{"query": "What\'s the weather?", "build_target": {"repository_name": "SavDont/weather-agent"}, "script_path": "agents/weather.py"}'
 ```
 
 ```python
 data = {
   "query": "What's the weather?",
-  "build_repository": { "repository_name": "SavDont/weather-agent" },
+  "build_target": { "repository_name": "SavDont/weather-agent" },
   "script_path": "agents/weather.py"
 }
 res = requests.post("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent", headers=headers, json=data)
@@ -243,7 +243,7 @@ print(res.json())
 ```typescript
 const payload = {
   query: "What's the weather?",
-  build_repository: { repository_name: "weather-agent" },
+  build_target: { repository_name: "weather-agent" },
   script_path: "agents/weather.py"
 };
 const res = await fetch("https://i7zigj097a.execute-api.us-east-1.amazonaws.com/Prod/call-agent", {
@@ -272,7 +272,7 @@ console.log(data);
 `query` *string*<br>
 Accessible via the `QUERY` environment variable within your agent code.<br><br>
 
-`build_repository` *object*<br>
+`build_target` *object*<br>
 Contains `repository_name`, which is the name of your build target that contains your agent code.
 `respository_name` takes the form of <github_id>/<repository>.
 Example: `yoheinakajima/babyagi`<br><br>
